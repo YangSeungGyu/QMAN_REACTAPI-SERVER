@@ -86,7 +86,7 @@ public class MemberController {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			boolean isDupl = false;
-			 String id = params.get("id").toString();
+			 String id = params.get("userId").toString();
 			 Map<String,Object> user = loginService.getUserById(id);
 			 if(user != null) {
 				 isDupl = true;
