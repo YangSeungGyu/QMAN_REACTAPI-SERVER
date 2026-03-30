@@ -1,0 +1,4 @@
+[
+  { "name": "홍길동", "phone": "01011111111", "ssnFront": "860628", "ssnBackFirst": "1","ci":"testci1111111"},
+  { "name": "아무개", "phone": "01022222222", "ssnFront": "860628.", "ssnBackFirst": "1","ci":"testci222222"}
+]
