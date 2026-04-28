@@ -22,7 +22,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	// /ws로 들어오면 웹소캣 연결. 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:5173","http://localhost:5174","http://localhost:5175").withSockJS();
+        registry.addEndpoint("/ws")
+        .setAllowedOrigins("http://localhost:5173","http://localhost:5174","http://localhost:5175"
+        		,"http://localhost:3000","http://192.168.0.112:5173","http://192.168.0.112:5174").withSockJS();
     }
 
     

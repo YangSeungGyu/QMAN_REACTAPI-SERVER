@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.reactapi.api.kafka.ExcelUploadController;
 import com.reactapi.api.kafka.KafkaController;
 import com.reactapi.api.test.TestController;
 
@@ -21,6 +22,9 @@ public class WebSecurityConfig {
 			,"/board/getBoardList","/board/getBoardDetail"
 			,"/test/getBasicGridList","/test/getPageGridList"
 			,KafkaController.KAFKA_TEST_REQUEST,KafkaController.KAFKA_TEST_INIT_DATA
+			, ExcelUploadController.KAFKA_EXCEL_UPLOAD, ExcelUploadController.KAFKA_EXCEL_GET_ALL
+			, ExcelUploadController.KAFKA_EXCEL_FILE_LIST, ExcelUploadController.KAFKA_EXCEL_FILE_DOWNLOAD
+			, ExcelUploadController.KAFKA_TOPIC_CREATE
 			
 			
 			//리엑트 경로
@@ -52,7 +56,8 @@ public class WebSecurityConfig {
         http
 	        .cors(cors -> cors.configurationSource(request -> {
 	            var config = new org.springframework.web.cors.CorsConfiguration();
-	            config.setAllowedOrigins(java.util.List.of("http://localhost:5173","http://localhost:5174","http://localhost:5175")); //리액트(Vite)의 주소와 포트를 정확히 적어주어야 합니다. 
+	            config.setAllowedOrigins(java.util.List.of("http://localhost:5173","http://localhost:5174"
+	            		,"http://192.168.0.112:5173","http://192.168.0.112:5174","http://localhost:5175","http://localhost:3000")); //리액트(Vite)의 주소와 포트를 정확히 적어주어야 합니다. 
 	            config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 	            config.setAllowedHeaders(java.util.List.of("*"));
 	            config.setAllowCredentials(true);

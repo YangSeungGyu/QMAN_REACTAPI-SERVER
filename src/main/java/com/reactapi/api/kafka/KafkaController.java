@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.*;
 
 
@@ -66,6 +68,7 @@ public class KafkaController {
 	 01.spring 기동시 groupId가 새로 생성되고 kafka가 떠있으면 모든 메시지를 messageStorage담는다.
 	 02.클라이언트에서 soket통신에서 
 	 * */
+	/* 로그 햇갈려서 일시 주석
 	@KafkaListener(
 		topics = "my-test-topic", 
 		groupId = "test-group-#{T(java.util.UUID).randomUUID().toString()}", //그룹 ID를 바꾸면 처음부터 읽어옵니다. - springboot 재기동시 새로운 그룹 생성
@@ -78,5 +81,5 @@ public class KafkaController {
 		//웹소켓으로 실시간 전송
 		messagingTemplate.convertAndSend("/topic/kafka-data", message);// registry.enableSimpleBroker("/topic") 연결
 	}
-	
+	*/
 }
