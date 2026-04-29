@@ -28,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
    
     	logger.info("Filter 진입: {} {}", request.getMethod(), request.getRequestURI());
     	
+    	
         // 1. 헤더에서 토큰 꺼내기
         String token = resolveToken(request);
 

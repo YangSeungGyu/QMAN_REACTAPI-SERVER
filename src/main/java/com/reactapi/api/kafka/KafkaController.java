@@ -7,6 +7,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Hidden;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -17,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-
+@Hidden
 @RestController
 public class KafkaController {
 	
@@ -36,7 +39,7 @@ public class KafkaController {
 	private final List<Map<String, Object>> messageStorage = new CopyOnWriteArrayList<>();
 	
 
-	//카프카에 메시지 보내기
+	//카프카에 메시지 보내기	
 	@PostMapping(KAFKA_TEST_REQUEST)
     public Map<String, Object> KAFKA_TEST_REQUEST(@RequestBody Map<String, Object> params) {
         Map<String, Object> resultMap = new HashMap<>();

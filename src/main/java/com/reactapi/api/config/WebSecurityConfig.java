@@ -21,6 +21,7 @@ public class WebSecurityConfig {
 			, "/login", "/member/checkJoinMember", "/member/checkUserId","/member/checkMobileAuth"
 			,"/board/getBoardList","/board/getBoardDetail"
 			,"/test/getBasicGridList","/test/getPageGridList"
+			
 			,KafkaController.KAFKA_TEST_REQUEST,KafkaController.KAFKA_TEST_INIT_DATA
 			, ExcelUploadController.KAFKA_EXCEL_UPLOAD, ExcelUploadController.KAFKA_EXCEL_GET_ALL
 			, ExcelUploadController.KAFKA_EXCEL_FILE_LIST, ExcelUploadController.KAFKA_EXCEL_FILE_DOWNLOAD
@@ -32,6 +33,7 @@ public class WebSecurityConfig {
 			 
 			 //웹소캣 허용 - WebSocketConfig에서 정한값
 			 ,"/ws/**"
+			 ,"/swagger","/swagger/**","/swagger-ui/**","/v3/**"
 			
 	};
 	
@@ -64,6 +66,9 @@ public class WebSecurityConfig {
 	            return config;
 	        }))
             .csrf(csrf -> csrf.disable())
+            .headers(headers -> headers
+                    .frameOptions(frameOptions -> frameOptions.disable())  // iframe 타사이트 허용
+                )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 미사용
             )

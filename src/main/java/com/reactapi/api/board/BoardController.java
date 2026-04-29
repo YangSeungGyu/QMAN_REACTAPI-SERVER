@@ -6,6 +6,12 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,12 +19,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+@Tag(name = "03.게시판 관리", description = "/board/")
 @RestController
 public class BoardController {
 
-	
+	@Operation(summary = "게시판 목록")
 	@PostMapping("/board/getBoardList")
-    public Map<String, Object> getBoardList(@RequestBody Map<String, Object> params) {
+    public Map<String, Object> getBoardList(
+    		@io.swagger.v3.oas.annotations.parameters.RequestBody(
+    				description = "Map<String, Object> params",
+    				content = @Content(
+    						schema = @Schema(implementation = Map.class),
+    						examples = @ExampleObject(
+    								value = "{ \"page\": 1, \"size\": 10 }"
+    						)
+    				)
+    		)
+    		
+    		@RequestBody Map<String, Object> params) {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {
@@ -51,8 +70,21 @@ public class BoardController {
         return resultMap;
     }
 	
+	
+	
+	@Operation(summary = "게시판 상세")
 	@PostMapping("/board/getBoardDetail")
-    public Map<String, Object> getBoardDetail(@RequestBody Map<String, Object> params) {
+    public Map<String, Object> getBoardDetail(
+    		@io.swagger.v3.oas.annotations.parameters.RequestBody(
+    		        description = "Map<String, Object> params",
+    		        content = @Content(
+    		            schema = @Schema(implementation = Map.class),
+    		            examples = @ExampleObject(
+    		                value = "{ \"idx\": 1}"
+    		            )
+    		        )
+    		    )
+    		@RequestBody Map<String, Object> params) {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {

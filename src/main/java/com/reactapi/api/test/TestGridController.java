@@ -15,14 +15,36 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+
+
+@Tag(name = "04.Grid 테스트", description = "/test/")
 @RestController
 public class TestGridController {
 	
 	private static final String BASIC_GRID_LIST_REQUEST = "/test/getBasicGridList";
 	private static final String PAGE_GRID_LIST_REQUEST = "/test/getPageGridList";
 	
+	@Operation(summary = "기본 그리드 리스트")
 	@PostMapping(BASIC_GRID_LIST_REQUEST)
-    public Map<String, Object> getBasicGridList(@RequestBody Map<String, Object> params) {
+    public Map<String, Object> getBasicGridList(
+    		@io.swagger.v3.oas.annotations.parameters.RequestBody(
+    				description = "Map<String, Object> params",
+    				content = @Content(
+    						schema = @Schema(implementation = Map.class),
+    						examples = @ExampleObject(
+    								value = "{ }"
+    						)
+    				)
+    		)
+    		
+    		@RequestBody Map<String, Object> params) {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {
@@ -39,8 +61,19 @@ public class TestGridController {
         return resultMap;
     }
 	
+	@Operation(summary = "페이징 그리드")
 	@PostMapping(PAGE_GRID_LIST_REQUEST)
-    public Map<String, Object> getPageGridList(@RequestBody Map<String, Object> params) {
+    public Map<String, Object> getPageGridList(
+    		@io.swagger.v3.oas.annotations.parameters.RequestBody(
+    				description = "Map<String, Object> params",
+    				content = @Content(
+    						schema = @Schema(implementation = Map.class),
+    						examples = @ExampleObject(
+    								value = "{ \"page\": 1, \"size\": 10, \"searchTitle\": \"테스트\", \"searchWriter\": \"아무개\" }"
+    						)
+    				)
+    		)
+    		@RequestBody Map<String, Object> params) {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {

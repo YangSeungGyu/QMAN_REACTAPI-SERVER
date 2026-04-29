@@ -1,9 +1,13 @@
 package com.reactapi.api.common;
 
 import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.Hidden;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Hidden
 @RestController
 public class CommonController {
 	

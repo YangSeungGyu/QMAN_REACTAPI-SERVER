@@ -16,6 +16,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reactapi.api.auth.service.LoginService;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+
+
+@Tag(name = "01.회원가입", description = "/member/")
 @RestController
 public class MemberController {
 	
@@ -29,8 +39,20 @@ public class MemberController {
 	 * @param params
 	 * @return resultMap
 	 */
+	@Operation(summary = "개인정보 조회")
 	@PostMapping("/member/checkMobileAuth")
-    public Map<String, Object> checkMobileAuth(@RequestBody Map<String, Object> params) {
+    public Map<String, Object> checkMobileAuth(
+    		@io.swagger.v3.oas.annotations.parameters.RequestBody(
+    				description = "Map<String, Object> params",
+    				content = @Content(
+    						schema = @Schema(implementation = Map.class),
+    						examples = @ExampleObject(
+    								value = "{ \"name\": \"홍길동\", \"phone\": \"0101111111\", \"ssnFront\": \"860101\", \"ssnBackFirst\": \"1\" }"
+    						)
+    				)
+    		)
+    		
+    		@RequestBody Map<String, Object> params) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 		
@@ -81,8 +103,19 @@ public class MemberController {
 	 * @param params
 	 * @return resultMap
 	 */
+	@Operation(summary = "개인정보 조회")
 	@PostMapping("/member/checkUserId")
-    public Map<String, Object> checkUserId(@RequestBody Map<String, Object> params) {
+    public Map<String, Object> checkUserId(
+    		@io.swagger.v3.oas.annotations.parameters.RequestBody(
+    				description = "Map<String, Object> params",
+    				content = @Content(
+    						schema = @Schema(implementation = Map.class),
+    						examples = @ExampleObject(
+    								value = "{ \"userId\": \"test\" }"
+    						)
+    				)
+    		)
+    		@RequestBody Map<String, Object> params) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			boolean isDupl = false;

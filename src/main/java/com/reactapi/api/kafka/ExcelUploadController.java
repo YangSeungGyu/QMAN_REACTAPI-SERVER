@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import io.swagger.v3.oas.annotations.Hidden;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.ConsumerSeekAware;
@@ -37,7 +40,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.*;
 
-
+@Hidden
 @RestController
 public class ExcelUploadController implements ConsumerSeekAware{
 	
