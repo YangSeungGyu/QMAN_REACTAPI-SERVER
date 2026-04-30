@@ -10,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -26,6 +27,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 
 
 @Tag(name = "01.회원가입", description = "/member/")
+@RequestMapping("/member")
 @RestController
 public class MemberController {
 	
@@ -40,7 +42,7 @@ public class MemberController {
 	 * @return resultMap
 	 */
 	@Operation(summary = "개인정보 조회")
-	@PostMapping("/member/checkMobileAuth")
+	@PostMapping("/checkMobileAuth")
     public Map<String, Object> checkMobileAuth(
     		@io.swagger.v3.oas.annotations.parameters.RequestBody(
     				description = "Map<String, Object> params",
@@ -104,7 +106,7 @@ public class MemberController {
 	 * @return resultMap
 	 */
 	@Operation(summary = "개인정보 조회")
-	@PostMapping("/member/checkUserId")
+	@PostMapping("/checkUserId")
     public Map<String, Object> checkUserId(
     		@io.swagger.v3.oas.annotations.parameters.RequestBody(
     				description = "Map<String, Object> params",

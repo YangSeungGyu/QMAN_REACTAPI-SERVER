@@ -22,10 +22,11 @@ import java.util.Map;
 
 @Tag(name = "03.게시판 관리", description = "/board/")
 @RestController
+@RequestMapping("/board")
 public class BoardController {
 
 	@Operation(summary = "게시판 목록")
-	@PostMapping("/board/getBoardList")
+	@PostMapping("/getBoardList")
     public Map<String, Object> getBoardList(
     		@io.swagger.v3.oas.annotations.parameters.RequestBody(
     				description = "Map<String, Object> params",
@@ -73,7 +74,7 @@ public class BoardController {
 	
 	
 	@Operation(summary = "게시판 상세")
-	@PostMapping("/board/getBoardDetail")
+	@PostMapping("/getBoardDetail")
     public Map<String, Object> getBoardDetail(
     		@io.swagger.v3.oas.annotations.parameters.RequestBody(
     		        description = "Map<String, Object> params",

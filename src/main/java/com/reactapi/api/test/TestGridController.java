@@ -10,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -24,12 +25,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 
 
-@Tag(name = "04.Grid 테스트", description = "/test/")
+@Tag(name = "04.테스트", description = "/test/")
+@RequestMapping("/test")
 @RestController
 public class TestGridController {
 	
-	private static final String BASIC_GRID_LIST_REQUEST = "/test/getBasicGridList";
-	private static final String PAGE_GRID_LIST_REQUEST = "/test/getPageGridList";
+	private static final String BASIC_GRID_LIST_REQUEST = "/getBasicGridList";
+	private static final String PAGE_GRID_LIST_REQUEST = "/getPageGridList";
 	
 	@Operation(summary = "기본 그리드 리스트")
 	@PostMapping(BASIC_GRID_LIST_REQUEST)

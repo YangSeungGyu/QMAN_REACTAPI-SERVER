@@ -26,6 +26,8 @@ public class WebSecurityConfig {
 			, ExcelUploadController.KAFKA_EXCEL_UPLOAD, ExcelUploadController.KAFKA_EXCEL_GET_ALL
 			, ExcelUploadController.KAFKA_EXCEL_FILE_LIST, ExcelUploadController.KAFKA_EXCEL_FILE_DOWNLOAD
 			, ExcelUploadController.KAFKA_TOPIC_CREATE
+			, "/testTopic", "/testTopic/**"
+			 
 			
 			
 			//리엑트 경로
@@ -33,7 +35,7 @@ public class WebSecurityConfig {
 			 
 			 //웹소캣 허용 - WebSocketConfig에서 정한값
 			 ,"/ws/**"
-			 ,"/swagger","/swagger/**","/swagger-ui/**","/v3/**"
+			 ,"/swagger","/swagger/**","/swagger-ui/**","/swagger-resources/**","/v3/**"
 			
 	};
 	
@@ -58,8 +60,11 @@ public class WebSecurityConfig {
         http
 	        .cors(cors -> cors.configurationSource(request -> {
 	            var config = new org.springframework.web.cors.CorsConfiguration();
-	            config.setAllowedOrigins(java.util.List.of("http://localhost:5173","http://localhost:5174"
-	            		,"http://192.168.0.112:5173","http://192.168.0.112:5174","http://localhost:5175","http://localhost:3000")); //리액트(Vite)의 주소와 포트를 정확히 적어주어야 합니다. 
+	            config.setAllowedOrigins(java.util.List.of(
+	            		"http://localhost:5173","http://localhost:5174"
+	            		,"http://192.168.0.112:5173","http://192.168.0.112:5174","http://localhost:5175","http://localhost:3000"
+	            		,"http://localhost:8199" //swagger
+	            		)); //리액트(Vite)의 주소와 포트를 정확히 적어주어야 합니다. 
 	            config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 	            config.setAllowedHeaders(java.util.List.of("*"));
 	            config.setAllowCredentials(true);

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 
 @Tag(name = "02.로그인권한 테스트", description = "/auth/")
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
 	
 	/**
@@ -26,7 +28,7 @@ public class AuthController {
 	 * @return
 	 */
 	@Operation(summary = "로그인 후 테스트")
-	@PostMapping("/auth/test01")
+	@PostMapping("/test01")
     public Map<String, Object> test01(
     		@io.swagger.v3.oas.annotations.parameters.RequestBody(
     				description = "Map<String, Object> params",
