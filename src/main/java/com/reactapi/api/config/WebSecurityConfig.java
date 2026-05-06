@@ -36,6 +36,7 @@ public class WebSecurityConfig {
 			 //웹소캣 허용 - WebSocketConfig에서 정한값
 			 ,"/ws/**"
 			 ,"/swagger","/swagger/**","/swagger-ui/**","/swagger-resources/**","/v3/**"
+			 ,"/scheduler/**"
 			
 	};
 	

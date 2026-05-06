@@ -53,10 +53,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         
         //1:1로 내보내는 경로
         //registry.setUserDestinationPrefix("/user");
-        
-        
-        
-        
-        
+     
     }
 }
