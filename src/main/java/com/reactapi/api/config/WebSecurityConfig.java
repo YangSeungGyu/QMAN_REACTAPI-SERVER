@@ -1,5 +1,7 @@
 package com.reactapi.api.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,6 +42,18 @@ public class WebSecurityConfig {
 			
 	};
 	
+	
+
+	private static final List<String> ALLOWED_IP_LIST = List.of(
+	        "http://localhost:5173",
+	        "http://localhost:5174",
+	        "http://localhost:5175",
+	        "http://localhost:3000",
+	        "http://localhost:8199",
+	        "http://192.168.0.112:5173",
+	        "http://192.168.0.112:5174"
+	    );
+	
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CustomLoginSuccessHandler successHandler;
 	private final CustomLoginFailureHandler failureHandler;
@@ -61,11 +75,7 @@ public class WebSecurityConfig {
         http
 	        .cors(cors -> cors.configurationSource(request -> {
 	            var config = new org.springframework.web.cors.CorsConfiguration();
-	            config.setAllowedOrigins(java.util.List.of(
-	            		"http://localhost:5173","http://localhost:5174"
-	            		,"http://192.168.0.112:5173","http://192.168.0.112:5174","http://localhost:5175","http://localhost:3000"
-	            		,"http://localhost:8199" //swagger
-	            		)); //리액트(Vite)의 주소와 포트를 정확히 적어주어야 합니다. 
+	            config.setAllowedOrigins(ALLOWED_IP_LIST);
 	            config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 	            config.setAllowedHeaders(java.util.List.of("*"));
 	            config.setAllowCredentials(true);
