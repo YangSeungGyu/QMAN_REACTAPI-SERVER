@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.stereotype.Component;
@@ -19,12 +20,18 @@ import java.util.Date;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	
+	@Value("${web.ip}")
+    private String webIp;
+	
+    @Value("${web.port}")
+    private String webPort; 
+	
 	// /ws로 들어오면 웹소캣 연결. 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-        .setAllowedOrigins("http://localhost:5173","http://localhost:5174","http://localhost:5175"
-        		,"http://localhost:3000","http://192.168.0.112:5173","http://192.168.0.112:5174").withSockJS();
+        .setAllowedOrigins("http://localhost:"+webPort,"http://localhost:"+webPort,"http://localhost:"+webPort
+        		,"http://localhost:3000","http://"+webIp+":"+webPort,"http://"+webIp+":"+webPort).withSockJS();
         
         
 		/* 이렇게 등록해봤자 들어오는 출입구만 다를 뿐 사실상 1개의 소캣으로 연결되는거임.

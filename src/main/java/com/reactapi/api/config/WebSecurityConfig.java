@@ -2,6 +2,7 @@ package com.reactapi.api.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,12 +13,33 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.reactapi.api.kafka.ExcelUploadController;
 import com.reactapi.api.kafka.KafkaController;
-import com.reactapi.api.test.TestController;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 public class WebSecurityConfig {
+	
+	@Value("${web.ip}")
+    private String webIp;
+	
+    @Value("${web.port}")
+    private String webPort; 
+
+    // 처음에는 선언만 해두고 final은 제거합니다.
+    private List<String> ALLOWED_IP_LIST;
+	
+    @PostConstruct
+    public void init() {
+        this.ALLOWED_IP_LIST = List.of(
+            "http://localhost:3000",
+            "http://localhost:" + webPort,
+            "http://" + webIp + ":" + webPort
+        );
+    }
+	
+	
+	
 	private String[] NO_AUTH_URL_PATH = {"/test", "/test/**"
 			, "/common/**"
 			, "/login", "/member/checkJoinMember", "/member/checkUserId","/member/checkMobileAuth"
@@ -40,21 +62,14 @@ public class WebSecurityConfig {
 			 ,"/ws/**"
 			 ,"/swagger","/swagger/**","/swagger-ui/**","/swagger-resources/**","/v3/**"
 			 ,"/scheduler/**"
+			 ,"/memo","/memo/**"
 			 
 			
 	};
 	
 	
 
-	private static final List<String> ALLOWED_IP_LIST = List.of(
-	        "http://localhost:5173",
-	        "http://localhost:5174",
-	        "http://localhost:5175",
-	        "http://localhost:3000",
-	        "http://localhost:8199",
-	        "http://192.168.0.112:5173",
-	        "http://192.168.0.112:5174"
-	    );
+
 	
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CustomLoginSuccessHandler successHandler;
@@ -74,6 +89,9 @@ public class WebSecurityConfig {
 
 	@Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		
+		System.out.println(ALLOWED_IP_LIST);
+		
         http
 	        .cors(cors -> cors.configurationSource(request -> {
 	            var config = new org.springframework.web.cors.CorsConfiguration();

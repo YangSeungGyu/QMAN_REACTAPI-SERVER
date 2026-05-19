@@ -3,6 +3,7 @@ import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.Pcaps;
 import org.pcap4j.packet.Packet;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,10 @@ import java.util.Map;
 
 @Service
 public class Pcap4jService {
+	
+	@Value("${web.ip}")
+    private String webIp;
+	
 	// STOMP 브로커로 메시지를 보낼 수 있게 해주는 스프링 내장 템플릿
     private final SimpMessagingTemplate messagingTemplate;
     private Thread captureThread;
@@ -155,7 +160,7 @@ public class Pcap4jService {
         }
         
         // 방향 판단 - LinkedHashMap이라 맨 앞에 못 넣으니 새 Map에 순서대로 담기
-        String myIp = "192.168.0.112";
+        String myIp = webIp;
         String src = info.getOrDefault("Source address", "");
         String dst = info.getOrDefault("Destination address", "");
         
