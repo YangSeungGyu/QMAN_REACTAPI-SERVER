@@ -74,6 +74,9 @@ public class Pcap4jService {
                                     if (!packetContent.contains("[IPv4 Header")) continue;
 
                                     Map<String, String> parsed = parsePacket(packetContent);
+                                    
+                                    //현재 패킷 soket통신 패킷마자 잡아버리기에 기타(local간 통신)은 빼버림
+                                    if("[기타]".equals(parsed.get("direction"))) continue;
 
                                    // String dst = parsed.getOrDefault("Destination address", "");
                                     //if (dst.startsWith("192.168.")) continue;
