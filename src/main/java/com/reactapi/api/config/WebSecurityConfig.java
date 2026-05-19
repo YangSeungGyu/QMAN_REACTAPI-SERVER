@@ -29,6 +29,7 @@ public class WebSecurityConfig {
 			, ExcelUploadController.KAFKA_EXCEL_FILE_LIST, ExcelUploadController.KAFKA_EXCEL_FILE_DOWNLOAD
 			, ExcelUploadController.KAFKA_TOPIC_CREATE
 			, "/testTopic", "/testTopic/**"
+			,"/packet","/packet/**"
 			 
 			
 			
@@ -39,6 +40,7 @@ public class WebSecurityConfig {
 			 ,"/ws/**"
 			 ,"/swagger","/swagger/**","/swagger-ui/**","/swagger-resources/**","/v3/**"
 			 ,"/scheduler/**"
+			 
 			
 	};
 	

@@ -45,7 +45,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
     	//브로커 등록 (그대로 쓰면 전체 클라이언트에 메시지)
-        registry.enableSimpleBroker("/topic", "/testTopic");
+        registry.enableSimpleBroker("/topic", "/testTopic" ,"/packet");
         
         //받을 경로
         registry.setApplicationDestinationPrefixes("/app");
