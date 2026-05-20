@@ -52,6 +52,7 @@ public class WebSecurityConfig {
 			, ExcelUploadController.KAFKA_TOPIC_CREATE
 			, "/testTopic", "/testTopic/**"
 			,"/packet","/packet/**"
+			,"/memory","/memory/**"
 			 
 			
 			
@@ -63,6 +64,7 @@ public class WebSecurityConfig {
 			 ,"/swagger","/swagger/**","/swagger-ui/**","/swagger-resources/**","/v3/**"
 			 ,"/scheduler/**"
 			 ,"/memo","/memo/**"
+			 ,"/storage","/storage/**"
 			 
 			
 	};

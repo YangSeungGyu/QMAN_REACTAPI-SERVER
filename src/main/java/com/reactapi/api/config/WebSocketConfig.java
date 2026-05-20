@@ -52,7 +52,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
     	//브로커 등록 (그대로 쓰면 전체 클라이언트에 메시지)
-        registry.enableSimpleBroker("/topic", "/testTopic" ,"/packet");
+    	
+    	String topicBk = "/topic"; //카프카 소켓통신
+    	String testTopicBk = "/testTopic"; // 소켓 테스트용 소켓
+    	String packetBk = "/packet"; // 패킷정보 전달 소캣
+    	String memoryBk = "/memory"; // 리눅스 메모리 전달 소캣
+    	String storageBk = "/storage"; // 리눅스 하드 용량 소켓
+    	
+        registry.enableSimpleBroker(topicBk, testTopicBk ,packetBk,memoryBk,storageBk);
         
         //받을 경로
         registry.setApplicationDestinationPrefixes("/app");
