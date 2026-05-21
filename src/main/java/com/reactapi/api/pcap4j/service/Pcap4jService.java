@@ -31,8 +31,8 @@ import java.util.regex.Pattern;
 public class Pcap4jService {
 
     @Value("${web.ip}")
-    private String webIp; 
-    
+    private String webIp;
+
     @Value("${web.port}")
     private String webPort;
 
@@ -55,7 +55,7 @@ public class Pcap4jService {
     }
 
     private void detectLocalIps() {
-        localIps.add(webIp); 
+        localIps.add(webIp);
         try {
             Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
             if (nics == null) return;
@@ -65,7 +65,7 @@ public class Pcap4jService {
                 for (InetAddress addr : Collections.list(nic.getInetAddresses())) {
                     String ip = addr.getHostAddress();
                     if (addr.isLoopbackAddress()) continue;
-                    if (ip.contains(":")) continue; 
+                    if (ip.contains(":")) continue; // IPv6 제외
 
                     localIps.add(ip);
                     System.out.println("[Pcap4j] 로컬 IP 발견: " + ip + " (" + nic.getDisplayName() + ")");
@@ -93,46 +93,48 @@ public class Pcap4jService {
                 for (PcapNetworkInterface nif : allDevs) {
                     Thread ifThread = new Thread(() -> {
                         try {
-                            // 버퍼 크기를 65536으로 넉넉하게 유지
                             PcapHandle handle = nif.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
                             System.out.println("[Pcap4j] 감시 시작 -> " + nif.getDescription());
-                            
-                            String nifName = nif.getName(); 
+
+                            String nifName = nif.getName();
 
                             while (isCapturing && !Thread.currentThread().isInterrupted()) {
-                                if("any".equals(nifName)) continue; 
+                                if ("any".equals(nifName)) continue; // 리눅스 가상 랜카드 - 중복데이터 방지
+
                                 Packet packet = handle.getNextPacket();
 
                                 if (packet != null) {
-                                    // 중요: 패킷 구조를 쪼개서 매핑 객체 가져오기
                                     Map<String, String> parsed = parsePacketStructure(packet);
-                                    if (parsed == null) continue; // IP 패킷이 아니면 패스
+                                    if (parsed == null) continue; // IP 패킷 아니면 패스
 
                                     String direction = parsed.get("direction");
                                     if ("[기타]".equals(direction)) continue;
 
                                     String proto = parsed.getOrDefault("Protocol", "");
                                     if ("IGMP".equals(proto)) continue;
-                                    
-                                    String destinationPort = parsed.get("Destination port");
-                                    String sourcePort = parsed.get("Source port");
-                                    String textData = parsed.get("Text data"); // 발라낸 순수 데이터
 
-                                    // 필터링 로직 규칙 유지
+                                    String destinationPort = parsed.get("Destination port");
+                                    String sourcePort     = parsed.get("Source port");
+                                    String textData       = parsed.get("Text data");   // 복호화된 텍스트
+                                    String hexStream      = parsed.get("Hex stream");  // 소켓 판별용 raw hex
+
+                                    // ★ 정상버전과 동일한 소켓 판별 로직 ★
                                     if ("[보내는 패킷]".equals(direction)) {
                                         if (sourcePort != null && sourcePort.contains("8199")) {
-                                            if (textData == null || textData.isBlank()) {
+                                            // hex가 없거나 c1 으로 시작하면 소켓 쓰레기 데이터 → 제외
+                                            if (hexStream == null || hexStream.startsWith("c1 ")) {
                                                 continue;
                                             }
                                         }
                                     } else if ("[받은 패킷]".equals(direction)) {
                                         if (destinationPort != null && destinationPort.contains("8199")) {
-                                            if (textData == null || textData.isBlank()) {
+                                            // hex가 없거나 00 으로 시작하면 소켓 쓰레기 데이터 → 제외
+                                            if (hexStream == null || hexStream.startsWith("00 ")) {
                                                 continue;
                                             }
                                         }
                                     }
-                                  
+
                                     StringBuilder sb = new StringBuilder();
                                     sb.append("nifName(랜카드) : ").append(nifName).append("\n");
                                     parsed.forEach((k, v) -> sb.append(k).append(": ").append(v).append("\n"));
@@ -149,7 +151,7 @@ public class Pcap4jService {
                         }
                     });
 
-                    ifThread.setDaemon(true); 
+                    ifThread.setDaemon(true);
                     ifThreads.add(ifThread);
                     ifThread.start();
                 }
@@ -176,7 +178,9 @@ public class Pcap4jService {
     }
 
     /**
-     * 흔들리는 문자열 파싱 대신, 패킷 객체 모델을 직접 분석하는 안전한 메서드
+     * 패킷 객체 모델을 직접 분석하는 안전한 메서드
+     * - IpV4Packet / TcpPacket 구조체에서 필드 직접 추출 (OS 무관, 문자열 파싱 불필요)
+     * - Hex stream 을 별도로 생성하여 소켓 판별 로직에 사용
      */
     private Map<String, String> parsePacketStructure(Packet packet) {
         // IPv4 레이어 추출
@@ -184,7 +188,7 @@ public class Pcap4jService {
         if (ipV4Packet == null) return null;
 
         Map<String, String> info = new LinkedHashMap<>();
-        
+
         // IP 및 프로토콜 추출
         String srcIp = ipV4Packet.getHeader().getSrcAddr().getHostAddress();
         String dstIp = ipV4Packet.getHeader().getDstAddr().getHostAddress();
@@ -192,27 +196,34 @@ public class Pcap4jService {
         info.put("Source address", srcIp);
         info.put("Destination address", dstIp);
 
-        // TCP 레이어 추출 (포트 및 페이로드 데이터용)
+        // TCP 레이어 추출
         TcpPacket tcpPacket = packet.get(TcpPacket.class);
         if (tcpPacket != null) {
             info.put("Source port", String.valueOf(tcpPacket.getHeader().getSrcPort().valueAsInt()));
             info.put("Destination port", String.valueOf(tcpPacket.getHeader().getDstPort().valueAsInt()));
-            
-            // ★ 핵심: 헤더 제외한 실제 알맹이 데이터(Payload) 바이트 배열 가져오기
+
             Packet payload = tcpPacket.getPayload();
             if (payload != null) {
                 byte[] rawPayload = payload.getRawData();
-                // 깨진 바이너리가 섞여있을 수 있으므로 문자열로 안전하게 디코딩
+
+                // ★ 소켓 판별용 Hex stream 생성 (정상버전과 동일한 "xx xx xx ..." 형식)
+                info.put("Hex stream", bytesToHexStream(rawPayload));
+
+                // 복호화: hex 바이트를 UTF-8 텍스트로 변환
                 String convertedText = new String(rawPayload, StandardCharsets.UTF_8).trim();
                 info.put("Text data", convertedText);
             } else {
+                info.put("Hex stream", null);
                 info.put("Text data", "");
             }
         } else {
-            // TCP가 아닐 경우 기존처럼 데이터가 있으면 변환 시도
+            // TCP가 아닐 경우 raw 데이터 처리
             byte[] rawData = packet.getRawData();
             if (rawData != null) {
+                info.put("Hex stream", bytesToHexStream(rawData));
                 info.put("Text data", new String(rawData, StandardCharsets.UTF_8).trim());
+            } else {
+                info.put("Hex stream", null);
             }
         }
 
@@ -229,5 +240,19 @@ public class Pcap4jService {
         result.putAll(info);
 
         return result;
+    }
+
+    /**
+     * byte[] → "xx xx xx ..." 형식의 hex 문자열 변환
+     * 정상버전의 Hex stream 포맷과 동일하게 맞춤
+     */
+    private String bytesToHexStream(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) return null;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            sb.append(String.format("%02x", bytes[i]));
+            if (i < bytes.length - 1) sb.append(" ");
+        }
+        return sb.toString();
     }
 }
